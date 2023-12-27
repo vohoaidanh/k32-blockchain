@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 01</title>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #left-column,
+        #right-column {
+            width: 40%;
+            margin-left: 5%;
+            margin-right: 5%; /* Khoảng cách giữa hai cột */
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            font-size: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%; /* Đặt chiều rộng cho nút */
+            margin-bottom: 10px; /* Khoảng cách giữa nút */
+            font-size: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            font-size: 21px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 500px;
+            padding: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+        <div id="left-column">
+        <h1>Blockchain Demo</h1>
+
+        <label for="transactionInput">Transaction Data:</label>
+        <input type="text" id="transactionInput">
+        
+        <button onclick="addTransaction()">Add Transaction</button>
+        <button onclick="createBlock()">Create Block</button>
+        
+        <label for="blockId">Block Id (Nhập block Id để xem block, nếu không nhập sẽ hiển thị toàn bộ):</label>
+        <input type="text" id="blockId">
+        <button onclick="viewChain()">View Chain</button>
+
+        <label for="jsonOutput">Blockchain Status:</label>
+        <textarea id="jsonOutput" readonly></textarea>
+        
+ 
+    </div>
+
+    <div id="right-column">
+        <h1>Verification</h1>
+
+        <label for="verifyBlockId">Block ID:</label>
+        <input type="text" id="verifyBlockId" value="0">
+
+        <label for="verifyTransactionId">Transaction ID:</label>
+        <input type="text" id="verifyTransactionId" value="0">
+
+        <label for="verifyTransaction">Transaction content:</label>
+        <input type="text" id="verifyTransaction">
+
+        <button onclick="verifyTransaction()">Verify</button>
+
+        <label for="verificationResult">Verification Result:</label>
+        <textarea id="verificationResult" readonly></textarea>
+        
+    </div>
+
+    <script>
+         function addTransaction() {
+             var transactionData = document.getElementById('transactionInput').value;
+             if (transactionData.trim() !== "") {
+                 fetch('/add_transaction', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/x-www-form-urlencoded'
+                     },
+                     body: 'transaction_data=' + encodeURIComponent(transactionData)
+                 })
+                 .then(response => response.json())
+                 .then(data => updateJsonOutput(data));
+             } else {
+                 alert('Transaction data cannot be empty!');
+             }
+         }
+        
+         function createBlock() {
+             fetch('/create_block', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/x-www-form-urlencoded'
+                 }
+             })
+             .then(response => response.json())
+             .then(data => updateJsonOutput(data));
+         }
+         
+         function viewChain() {
+             var blockId = document.getElementById('blockId').value;
+             fetch('/view_chain', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/x-www-form-urlencoded'
+                 },
+                 body: 'blockId=' + encodeURIComponent(blockId)
+             })
+             .then(response => response.json())
+             .then(data => updateJsonOutput(data));
+         }
+         
+         function updateJsonOutput(data) {
+             document.getElementById('jsonOutput').value = JSON.stringify(data, null, 2);
+         }
+        
+        function updateVerificationResult(data) {
+            document.getElementById('verificationResult').value = JSON.stringify(data, null, 2);
+        }
+        
+        function verifyTransaction() {
+            var blockId = document.getElementById('verifyBlockId').value;
+            var transId = document.getElementById('verifyTransactionId').value;
+            var transaction = document.getElementById('verifyTransaction').value;
+            
+            fetch('/verify_transaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'blockId=' + encodeURIComponent(blockId) +
+                  '&transId=' + encodeURIComponent(transId) +
+                  '&transaction=' + encodeURIComponent(transaction)
+            })
+            .then(response => response.json())
+            .then(data => updateVerificationResult(data));
+        }
+
+        
+        
+    </script>
+</body>
+</html>

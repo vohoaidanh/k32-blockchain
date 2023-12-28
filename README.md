@@ -10,7 +10,7 @@ activate test
 #install all requirements packages
 pip install -r requirements.txt
 
-#Move to La01 folder
+#Move to <k32-blockchain> folder
 
 #Run server to Demo
 python run.py

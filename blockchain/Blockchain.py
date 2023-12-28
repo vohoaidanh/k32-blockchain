@@ -93,6 +93,7 @@ class Block:
 class Blockchain:
     # difficulty of our PoW algorithm
     difficulty = 2
+    START = '0'
 
     def __init__(self):
         self.unconfirmed_transactions = []
@@ -138,7 +139,7 @@ class Blockchain:
         Check if block_hash is valid hash of block and satisfies
         the difficulty criteria.
         """
-        return (block_hash.startswith('01' * Blockchain.difficulty) and
+        return (block_hash.startswith(self.START * Blockchain.difficulty) and
                 block_hash == block.compute_hash())
 
     def proof_of_work(self, block):
@@ -149,7 +150,7 @@ class Blockchain:
         block.nonce = 0
 
         computed_hash = block.compute_hash()
-        while not computed_hash.startswith('0' * Blockchain.difficulty):
+        while not computed_hash.startswith(self.START * Blockchain.difficulty):
             block.nonce += 1
             computed_hash = block.compute_hash()
 
@@ -294,5 +295,3 @@ def verify():
 
 
 
-
-   

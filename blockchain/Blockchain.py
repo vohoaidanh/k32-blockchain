@@ -5,7 +5,6 @@ from hashlib import sha256
 import json
 import time
 from flask import Flask, render_template, request, jsonify
-#import requests
 
 def get_merkle_path(transactions, transId):
     """
@@ -91,11 +90,9 @@ class Block:
 
         return sha256(block_string.encode()).hexdigest()
 
-
-    
 class Blockchain:
     # difficulty of our PoW algorithm
-    difficulty = 1
+    difficulty = 2
 
     def __init__(self):
         self.unconfirmed_transactions = []
@@ -152,7 +149,7 @@ class Blockchain:
         block.nonce = 0
 
         computed_hash = block.compute_hash()
-        while not computed_hash.startswith('01' * Blockchain.difficulty):
+        while not computed_hash.startswith('0' * Blockchain.difficulty):
             block.nonce += 1
             computed_hash = block.compute_hash()
 
@@ -182,24 +179,6 @@ class Blockchain:
 
         self.unconfirmed_transactions = []
         return new_block.index
-    
-    def verify_transaction_in_block(self, transaction_hash, block_index):
-        """
-        A function to verify if a transaction belongs to a block using Merkle Tree.
-        """
-        if not self.is_valid_block_index(block_index):
-            return False
-    
-        block = self.chain[block_index]
-        merkle_root = block.build_merkle_tree_root(block.transactions)
-    
-        # Tính toán hash của giao dịch cần xác minh
-        target_hash = sha256(transaction_hash.encode()).hexdigest()
-    
-        # Xác minh sự thuộc về của giao dịch trong cây Merkle
-        return merkle_root == target_hash
-
-
 
 # =============================================================================
 # 
@@ -231,8 +210,6 @@ class Blockchain:
 
 
 app = Flask(__name__)
-
-#app.run(debug=True, port=5000)
 
 # Danh sách giao dịch và khối đơn giản (chỉ để mô phỏng)
 chain = Blockchain()

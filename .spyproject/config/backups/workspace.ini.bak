@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['blockchain\\basic_script_execution.py']
+recent_files = ['blockchain\\P2PKH_Script.py', 'blockchain\\Spend_Locked_Funds.py', 'blockchain\\Multisignature_Transactions.py', 'draft\\basic_script_execution.py', 'a.py']
 
 [main]
 version = 0.2.0

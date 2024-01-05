@@ -8,10 +8,11 @@ from bitcoin.core import b2x, lx, COIN, COutPoint, CMutableTxOut, CMutableTxIn, 
 from bitcoin.core.script import CScript, OP_DUP, OP_HASH160, OP_EQUALVERIFY, OP_CHECKSIG, SignatureHash, SIGHASH_ALL, OP_0
 from bitcoin.core.scripteval import VerifyScript, SCRIPT_VERIFY_P2SH
 from bitcoin.wallet import CBitcoinAddress, CBitcoinSecret, P2PKHBitcoinAddress
+SelectParams('testnet')
 
 
 def create_txin(txid, output_index):
-    txid = lx('a9f14fa5ddd8310556b18418aeeaa3edb92ee9eae151d0d3a7d651190c351c20') # Transaction ID of the UTXO you want to spend
+    txid = lx(txid) # Transaction ID of the UTXO you want to spend
     return CMutableTxIn(COutPoint(txid, output_index))
 
 def create_txout(amount_to_send = 0.00001, destination_address = ''):
@@ -30,7 +31,7 @@ def signed_transaction(tx, private_key):
     sig = private_key.sign(sighash) + bytes([SIGHASH_ALL])
     
     # Set the scriptSig of our transaction input appropriately.
-    txin.scriptSig = CScript([sig, private_key.pub])
+    tx.vin[0].scriptSig = CScript([sig, private_key.pub])
     
     # Verify the signature worked. This calls EvalScript() and actually executes
     # the opcodes in the scripts to see if everything worked out. If it doesn't an
@@ -41,14 +42,16 @@ def signed_transaction(tx, private_key):
 
 SelectParams('testnet')
 
-# Private key and Bitcoin address from the previous step
+# Private key and Bitcoin address from the previous step (we had created in P2PKH_Script.py)
 private_key = CBitcoinSecret('cN5rJPxSoLCUd53GT8W27X7EdGJx1dopFcCEnZHFDSFgPnmC31Rh')
 
+# Bitcoin Address we had created in P2PKH_Script.py
 address = P2PKHBitcoinAddress('mhuL3JPyM7TmJ5PZHvu7V3YHeWZN8CD4MP')
 
 # Create a transaction input (UTXO)
 
-txid = 'a9f14fa5ddd8310556b18418aeeaa3edb92ee9eae151d0d3a7d651190c351c20' # Transaction ID of the UTXO you want to spend
+#txid = 'a9f14fa5ddd8310556b18418aeeaa3edb92ee9eae151d0d3a7d651190c351c20' # Transaction ID of the UTXO you want to spend
+txid = 'ad301f20e72e867c0853119ece9cb7daf3e79e29d9bc17a6571b943a213a7040'
 output_index = 0 # Index of the output in the transaction
 txin = create_txin(txid, output_index)
 
@@ -64,6 +67,7 @@ tx = CMutableTransaction([txin], [txout])
 # Sign this transaction
 
 raw_transaction = signed_transaction(tx, private_key)
+
 print(50*'=')
 print('Transaction infomation')
 print("Private Key:", private_key)

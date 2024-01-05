@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import hashlib
-# P2PKH Script
+
 from bitcoin import *
 from bitcoin.wallet import CBitcoinSecret, P2PKHBitcoinAddress
 
@@ -25,5 +25,4 @@ print("Private Key:", private_key)
 print("Public Key: {0}".format(public_key.hex()))
 print("Bitcoin Address:", address)
 print(50*'=')
-
 
